@@ -12,8 +12,56 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  username    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        Int       @id @default(autoincrement())
+  username  String    @db.VarChar(10)
+  email     String    @unique
+  firstName String    @db.VarChar(20)
+  lastName  String    @db.VarChar(20)
+  age       Int
+  profile   Profile?
+  posts     Post[]
+  comments  Comment[]
+  commentId Int?
+  comment   User?     @relation("commentReply", fields: [commentId], references: [id])
+  reply     User[]    @relation("commentReply")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  hobbies   String[]
+  status    Boolean
+  biography String   @db.VarChar(800)
+  image     String
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar(150)
+  content   String    @db.VarChar(1000)
+  published Boolean
+  image     String?   @default("-")
+  userId    Int       @unique
+  user      User      @relation(fields: [userId], references: [id])
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.VarChar(250)
+  postId    Int      @unique
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }

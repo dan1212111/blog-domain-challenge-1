@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Profile" ALTER COLUMN "biography" SET DATA TYPE VARCHAR(800);
